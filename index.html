@@ -6,10 +6,11 @@
   <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 </head>
 
-<body style="width: 100%; height: 100%;">
+<body>
+  <a href="second.html">New page</a>
   <p id="persistent">Grab value from local storage</p>
   <div class="form-group">
-    <input type="text" value="Enter value to place in local storage" id="thevalue" class="form-control" />
+    <input type="text" value="jdgkbifmkkkcgglljmlojibojoafmlhi" id="thevalue" class="form-control" />
   </div>
   <div class="form-group">
     <input type="button" id="setit" class="btn btn-primary" value="Set It!" />
@@ -17,7 +18,7 @@
   </div>
 
   <script type="text/javascript">
-    require('nw.gui').Window.get().showDevTools()
+    // require('nw.gui').Window.get().showDevTools()
 
     let p = document.querySelector("#persistent");
 
@@ -42,24 +43,28 @@
   <script>
     var nodeCrypto = require('crypto')
 
-    // nodeCrypto.generateKeyPair('rsa', {
-    //   modulusLength: 4096,
-    //   publicKeyEncoding: {
-    //     type: 'spki',
-    //     format: 'pem'
-    //   },
-    //   privateKeyEncoding: {
-    //     type: 'pkcs8',
-    //     format: 'pem',
-    //     cipher: 'aes-256-cbc',
-    //     passphrase: 'top secret'
-    //   }
-    // }, (err, publicKey, privateKey) => {
-    // Handle errors and use the generated key pair.
-    // alert(publicKey)
-    // alert(privateKey)
-    // });
+    if (localStorage.getItem("myPrivateKey")) {
 
+    }
+    else {
+      nodeCrypto.generateKeyPair('rsa', {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+          type: 'spki',
+          format: 'der'
+        },
+        privateKeyEncoding: {
+          type: 'pkcs8',
+          format: 'der',
+          cipher: 'aes-256-cbc',
+          passphrase: 'top secret'
+        }
+      }, (err, publicKey, privateKey) => {
+        localStorage.setItem("myPublicKey", publicKey)
+        localStorage.setItem("myPrivateKey", privateKey)
+      });
+
+    }
     // Create an empty context menu
     var menu = new nw.Menu();
 
