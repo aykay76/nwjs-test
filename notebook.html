@@ -1,0 +1,86 @@
+<html>
+
+<head>
+  <title>Testing NW.JS</title>
+  <link rel="stylesheet" type="text/css" href="notebook.css" />
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+
+  <script src='./jquery-3.4.0.min.js'></script>
+  <script src='./bootstrap.min.js'></script>
+</head>
+
+<body>
+  <div id="notes" class="form-group">
+  </div>
+
+  <div class="form-group">
+    <textarea id="console" class="monospace" style="width: 100%" rows="5"></textarea>
+  </div>
+
+  <script type="text/javascript">
+    var id = 1
+
+    $(function () {
+      // redirect the console
+      window.onerror = function(message, source, lineno, colno, error) {
+        var t = $('#console').text()
+        t += message + '\n'
+        $('#console').text(t)
+      }
+
+      console.log = console.error = console.debug = function (o) {
+        var t = $('#console').text()
+        t += o + '\n'
+        $('#console').text(t)
+      }
+
+      // load any existing notebook entries from local storage
+
+      // then add an empty entry with an option to add the next one
+      appendNote()
+    })
+
+    appendNote = function () {
+      $('#notes').append(`<textarea id="note-${id}" class="form-control monospace" rows="10"></textarea><br />`)
+      $('#notes').append(`<button id="${id}" class="btn-sm btn-primary">Execute</button> &nbsp; &bull; &nbsp;`)
+      $('#notes').append(`<small class="text-muted">Add section</p>`)
+
+      $(`#note-${id}`).on('change paste keyup', function() {
+        window.localStorage.setItem($(this)[0].id.substring(5), $(this).val())
+      })
+
+      $(`#${id}`).click(function() {
+        var id = `#note-${$(this)[0].id}`
+        var s = $(id).val()
+        eval(s)
+      })
+
+      $('#notes small').click(function () {
+        appendNote()
+      })
+
+      id++
+    }
+    // require('nw.gui').Window.get().showDevTools()
+
+    // let p = document.querySelector("#persistent");
+
+    // if (window.localStorage) {
+    //   p.textContent = localStorage.getItem('testitem');
+    // }
+    // else {
+    //   document.querySelectorAll('input').forEach((i) => { i.enabled = false })
+    // }
+    // document.querySelectorAll('input#clear')[0].addEventListener('click', (el, me) => {
+    //   window.localStorage.clear();
+    //   p.textContent = '';
+    // });
+    // document.querySelector('input#setit').addEventListener('click', () => {
+    //   let val = document.querySelector('#thevalue').value
+    //   window.localStorage.setItem('testitem', val);
+    //   p.textContent = val;
+    // });
+  </script>
+</body>
+
+</html>

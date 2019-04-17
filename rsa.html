@@ -4,27 +4,37 @@
 <head>
   <title>Context Menu</title>
   <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+  <script src='./jquery-3.4.0.min.js'></script>
+  <script src='./bootstrap.min.js'></script>
 </head>
 
 <body style="padding: 1rem;">
   <button id="regenerateKeyPair" class="btn btn-primary">Re-generate Key Pair</button>
   <canvas id="myCanvas">
-
   </canvas>
+
+  <input id="publicKey" class="form-field" type="text" size="50" />
+  <input id="privateKey" class="form-field" type="text" size="50" />
+
   <p>'Right click' to show context menu.</p>
 
   <script>
     var nodeCrypto = require('crypto')
-    var myPublicKey = null
-    var myPrivateKey = null
+    $(function () {
+      var myPublicKey = null
+      var myPrivateKey = null
 
-    if (localStorage.getItem("myPrivateKey")) {
-      myPrivateKey = localStorage.getItem("myPrivateKey")
-      myPublicKey = localStorage.getItem("myPublicKey")
-    }
-    else {
-      regenerateKeyPair()
-    }
+      if (localStorage.getItem("myPrivateKey")) {
+        myPrivateKey = localStorage.getItem("myPrivateKey")
+        myPublicKey = localStorage.getItem("myPublicKey")
+
+        $('#publicKey').val(myPublicKey)
+        $('#privateKey').val(myPrivateKey)
+      }
+      else {
+        regenerateKeyPair()
+      }
+    })
 
     var c = document.getElementById("myCanvas");
     var ctx = c.getContext("2d");
@@ -32,8 +42,10 @@
     ctx.lineTo(200, 100);
     ctx.stroke();
 
-    regenerateKeyPair = function(el, ev) {
-      alert(ev)
+    $('#regenerateKeyPair').click(function () {
+      regenerateKeyPair()
+    })
+    regenerateKeyPair = function () {
       nodeCrypto.generateKeyPair('rsa', {
         modulusLength: 4096,
         publicKeyEncoding: {
@@ -44,15 +56,19 @@
           type: 'pkcs8',
           format: 'pem',
           cipher: 'aes-256-cbc',
-          passphrase: 'top secret'
+          passphrase: 'top-secret'
         }
       }, (err, publicKey, privateKey) => {
         localStorage.setItem("myPublicKey", publicKey)
+        myPublicKey = publicKey
         localStorage.setItem("myPrivateKey", privateKey)
+        myPrivateKey = privateKey
+        $('#publicKey').val(myPublicKey)
+        $('#privateKey').val(myPrivateKey)
       });
     }
 
-    document.getElementById('regenerateKeyPair').addEventListener('click', (el,ev) => { regenerateKeyPair(el, ev) })
+    document.getElementById('regenerateKeyPair').addEventListener('click', (el, ev) => { regenerateKeyPair(el, ev) })
 
     // Create an empty context menu
     var menu = new nw.Menu();
