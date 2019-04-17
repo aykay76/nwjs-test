@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <title>Context Menu</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+</head>
+
+<body>
+    <a href="second.html">Check file hash</a>
+    <p id="persistent">Grab value from local storage</p>
+    <div class="form-group">
+        <input type="text" value="jdgkbifmkkkcgglljmlojibojoafmlhi" id="thevalue" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="button" id="setit" class="btn btn-primary" value="Set It!" />
+        <input type="button" id="clear" class="btn btn-primary" value="Clear" />
+    </div>
+
+    <script type="text/javascript">
+        // require('nw.gui').Window.get().showDevTools()
+
+        let p = document.querySelector("#persistent");
+
+        if (window.localStorage) {
+            p.textContent = localStorage.getItem('testitem');
+        }
+        else {
+            document.querySelectorAll('input').forEach((i) => { i.enabled = false })
+        }
+        document.querySelectorAll('input#clear')[0].addEventListener('click', (el, me) => {
+            window.localStorage.clear();
+            p.textContent = '';
+        });
+        document.querySelector('input#setit').addEventListener('click', () => {
+            let val = document.querySelector('#thevalue').value
+            window.localStorage.setItem('testitem', val);
+            p.textContent = val;
+        });
+    </script>
+    <p>'Right click' to show context menu.</p>
+
+    <script>
+        var nodeCrypto = require('crypto')
+
+        if (localStorage.getItem("myPrivateKey")) {
+
+        }
+        else {
+            nodeCrypto.generateKeyPair('rsa', {
+                modulusLength: 4096,
+                publicKeyEncoding: {
+                    type: 'spki',
+                    format: 'der'
+                },
+                privateKeyEncoding: {
+                    type: 'pkcs8',
+                    format: 'der',
+                    cipher: 'aes-256-cbc',
+                    passphrase: 'top secret'
+                }
+            }, (err, publicKey, privateKey) => {
+                localStorage.setItem("myPublicKey", publicKey)
+                localStorage.setItem("myPrivateKey", privateKey)
+            });
+
+        }
+        // Create an empty context menu
+        var menu = new nw.Menu();
+
+        // Add some items with label
+        menu.append(new nw.MenuItem({
+            label: 'Item A',
+            click: function () {
+                alert('You have clicked at "Item A"');
+            }
+        }));
+        menu.append(new nw.MenuItem({ label: 'Item B' }));
+        menu.append(new nw.MenuItem({ type: 'separator' }));
+        menu.append(new nw.MenuItem({ label: 'Item C' }));
+
+        // Hooks the "contextmenu" event
+        document.body.addEventListener('contextmenu', function (ev) {
+            // Prevent showing default context menu
+            ev.preventDefault();
+            // Popup the native context menu at place you click
+            menu.popup(ev.x, ev.y);
+
+            return false;
+        }, false);
+
+    </script>
+</body>
+
+</html>

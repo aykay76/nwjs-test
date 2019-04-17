@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Context Menu</title>
+  <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+</head>
+
+<body style="padding: 1rem;">
+  <button id="regenerateKeyPair" class="btn btn-primary">Re-generate Key Pair</button>
+  <canvas id="myCanvas">
+
+  </canvas>
+  <p>'Right click' to show context menu.</p>
+
+  <script>
+    var nodeCrypto = require('crypto')
+    var myPublicKey = null
+    var myPrivateKey = null
+
+    if (localStorage.getItem("myPrivateKey")) {
+      myPrivateKey = localStorage.getItem("myPrivateKey")
+      myPublicKey = localStorage.getItem("myPublicKey")
+    }
+    else {
+      regenerateKeyPair()
+    }
+
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.moveTo(0, 0);
+    ctx.lineTo(200, 100);
+    ctx.stroke();
+
+    regenerateKeyPair = function(el, ev) {
+      alert(ev)
+      nodeCrypto.generateKeyPair('rsa', {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+          type: 'spki',
+          format: 'pem'
+        },
+        privateKeyEncoding: {
+          type: 'pkcs8',
+          format: 'pem',
+          cipher: 'aes-256-cbc',
+          passphrase: 'top secret'
+        }
+      }, (err, publicKey, privateKey) => {
+        localStorage.setItem("myPublicKey", publicKey)
+        localStorage.setItem("myPrivateKey", privateKey)
+      });
+    }
+
+    document.getElementById('regenerateKeyPair').addEventListener('click', (el,ev) => { regenerateKeyPair(el, ev) })
+
+    // Create an empty context menu
+    var menu = new nw.Menu();
+
+    // Add some items with label
+    menu.append(new nw.MenuItem({
+      label: 'Item A',
+      click: function () {
+        alert('You have clicked at "Item A"');
+      }
+    }));
+    menu.append(new nw.MenuItem({ label: 'Item B' }));
+    menu.append(new nw.MenuItem({ type: 'separator' }));
+    menu.append(new nw.MenuItem({ label: 'Item C' }));
+
+    // Hooks the "contextmenu" event
+    document.body.addEventListener('contextmenu', function (ev) {
+      // Prevent showing default context menu
+      ev.preventDefault();
+      // Popup the native context menu at place you click
+      menu.popup(ev.x, ev.y);
+
+      return false;
+    }, false);
+
+  </script>
+</body>
+
+</html>
