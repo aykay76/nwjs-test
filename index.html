@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     <title>Testing NW.JS</title>
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 
-    <script>window.$ = window.jQuery = require('./jquery-3.4.0.min.js');</script>
-    </head>
+    <script src='./jquery-3.4.0.min.js'></script>
+</head>
 
-    <body>
-        <div id="pagelist" class="list-group">
-            
+<body>
+    <div class="row">
+        <div class="col-4">
+            <div id="pagelist" class="list-group">
+
+            </div>
         </div>
+        <div class="col-8">
 
-        <ul id="directories">
-        </ul>
+        </div>
+    </div>
 
-        <script>
-            $(function() {
-                const fs = require('fs')
+    <ul id="directories">
+    </ul>
 
-                alert($('#pagelist'))
-                fs.readdir('.', function(err, files) {
-                    for (i = 0; i < files.length; i++) {
-                        $('#pagelist').append(`<div class="list-group-item">${files[i]}</div>`)
-                    }
-                })
-
-                fs.readdir('/Users/alan/git', function(err, files) {
-                    for (i = 0; i < files.length; i++)
-                    {
-                        $('#directories').append(`<li>${files[i]}</li>`)
-                    }
-                })
+    <script>
+        $(function () {
+            const fs = require('fs')
+            fs.readdir('.', function (err, files) {
+                for (i = 0; i < files.length; i++) {
+                    var item = `<div class="list-group-item">${files[i]}</div>`
+                    $('#pagelist').append(item)
+                }
             })
-        </script>
-    </body>
+
+            fs.readdir('/Users/alan/git', function (err, files) {
+                for (i = 0; i < files.length; i++) {
+                    $('#directories').append(`<li>${files[i]}</li>`)
+                }
+            })
+        })
+    </script>
+</body>
+
 </html>
