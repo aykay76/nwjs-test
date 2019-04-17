@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 
     <script src='./jquery-3.4.0.min.js'></script>
+    <script src='./bootstrap.min.js'></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
             const fs = require('fs')
             fs.readdir('.', function (err, files) {
                 for (i = 0; i < files.length; i++) {
-                    var item = `<div class="list-group-item">${files[i]}</div>`
+                    var item = `<a class="list-group-item list-group-item-action">${files[i]}</a>`
                     $('#pagelist').append(item)
                 }
             })
