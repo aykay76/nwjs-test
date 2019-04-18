@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Testing NW.JS</title>
+  <title>Javascript Notebook</title>
   <link rel="stylesheet" type="text/css" href="notebook.css" />
   <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 
@@ -19,10 +19,11 @@
 
   <script type="text/javascript">
     var id = 1
+    var notes = new Array()
 
     $(function () {
       // redirect the console
-      window.onerror = function(message, source, lineno, colno, error) {
+      window.onerror = function (message, source, lineno, colno, error) {
         var t = $('#console').text()
         t += message + '\n'
         $('#console').text(t)
@@ -35,28 +36,46 @@
       }
 
       // load any existing notebook entries from local storage
+      var raw = window.localStorage.getItem("notes")
+      if (raw == null) {
+        notes = new Array()
+      }
+      else {
+        notes = JSON.parse(raw)
+      }
 
-      // then add an empty entry with an option to add the next one
-      appendNote()
+      if (notes == null || notes.length == 0) {
+        appendNote(id, '')
+        notes.push(id)
+        window.localStorage.setItem("notes", JSON.stringify(notes))
+      }
+      else {
+        for (i = 0; i < notes.length; i++) {
+          var content = window.localStorage.getItem(`${notes[i]}`)
+          appendNote(notes[i], content)
+        }
+      }
     })
 
-    appendNote = function () {
-      $('#notes').append(`<textarea id="note-${id}" class="form-control monospace" rows="10"></textarea><br />`)
-      $('#notes').append(`<button id="${id}" class="btn-sm btn-primary">Execute</button> &nbsp; &bull; &nbsp;`)
+    appendNote = function (id, content) {
+      $('#notes').append(`<textarea id="${id}" class="form-control monospace" rows="10">${content}</textarea><br />`)
+      $('#notes').append(`<button id="btn-${id}" class="btn-sm btn-primary">Execute</button> &nbsp; &bull; &nbsp;`)
       $('#notes').append(`<small class="text-muted">Add section</p>`)
 
-      $(`#note-${id}`).on('change paste keyup', function() {
-        window.localStorage.setItem($(this)[0].id.substring(5), $(this).val())
+      $(`#${id}`).on('change paste keyup', function () {
+        window.localStorage.setItem($(this)[0].id, $(this).val())
       })
 
-      $(`#${id}`).click(function() {
-        var id = `#note-${$(this)[0].id}`
+      $(`#btn-${id}`).click(function () {
+        var id = `#${$(this)[0].id.substring(4)}`
         var s = $(id).val()
         eval(s)
       })
 
       $('#notes small').click(function () {
-        appendNote()
+        appendNote(id, '')
+        notes.push(id)
+        window.localStorage.setItem("notes", JSON.stringify(notes))
       })
 
       id++
