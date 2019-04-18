@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
 
 <head>
     <title>Testing NW.JS</title>
@@ -9,15 +9,14 @@
     <script src='./bootstrap.min.js'></script>
 </head>
 
-<body>
-    <div class="row">
-        <div class="col-4">
+<body style="height: 100%; margin: 15px;">
+    <div class="row" style="height: 100%;">
+        <div class="col-3">
             <div id="pagelist" class="list-group">
-
             </div>
         </div>
-        <div class="col-8">
-
+        <div id="content" class="col-9">
+            <iframe id="subpage" style="width: 100%; height: 100%; border: 0px; "></iframe>
         </div>
     </div>
 
@@ -29,9 +28,12 @@
             const fs = require('fs')
             fs.readdir('.', function (err, files) {
                 for (i = 0; i < files.length; i++) {
-                    var item = `<a class="list-group-item list-group-item-action">${files[i]}</a>`
-                    $('#pagelist').append(item)
+                    if (files[i].endsWith(".html") && files[i] != "index.html") {
+                        var item = `<a class="list-group-item list-group-item-action">${files[i].substring(0, files[i].length - 5)}</a>`
+                        $('#pagelist').append(item)
+                    }
                 }
+                addPageListClick()
             })
 
             fs.readdir('/Users/alan/git', function (err, files) {
@@ -40,6 +42,14 @@
                 }
             })
         })
+
+        addPageListClick = function() {
+            $('#pagelist .list-group-item').click(function() {
+                // $.get(`${$(this).text()}.html`, function(data) {
+// alert(data)
+                $("#subpage").attr("src", `${$(this).text()}.html`)
+            })
+        }
     </script>
 </body>
 
