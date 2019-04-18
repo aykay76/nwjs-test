@@ -3,7 +3,7 @@
   "main": "index.html",
   "scripts": {
     "release": "/Applications/nwjs.app/Contents/MacOS/nwjs .",
-    "start": "~/Downloads/nwjs-sdk-v0.36.2-osx-x64/nwjs.app/Contents/MacOS/nwjs ."
+    "start": "~/Downloads/nwjs-sdk-v0.37.4-osx-x64/nwjs.app/Contents/MacOS/nwjs ."
   },
   "window": {
     "width": 1920,
